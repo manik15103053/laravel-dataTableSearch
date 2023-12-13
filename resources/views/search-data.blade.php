@@ -31,36 +31,32 @@
                     <div class="card-body">
                         <table class="table table-striped" id="search-results">
                             <thead>
-                              <tr>
-                                <th width="5%" scope="col">Sl</th>
-                                <th width="25%" scope="col">Post Title</th>
-                                <th width="10%" scope="col">Unit Price</th>
-                                <th width="10%" scope="col">Quantity</th>
-                                <th width="10%" scope="col">Regular Price</th>
-                                <th width="10%" scope="col">Shipping Cost</th>
-                                <th width="10%" scope="col">Date</th>
-                                {{-- <th width="10%" scope="col">Description</th> --}}
-                              </tr>
+                                <tr>
+                                    <th width="5%" scope="col">Sl</th>
+                                    <th width="25%" scope="col">Post Title</th>
+                                    <th width="10%" scope="col">Unit Price</th>
+                                    <th width="10%" scope="col">Quantity</th>
+                                    <th width="10%" scope="col">Regular Price</th>
+                                    <th width="10%" scope="col">Shipping Cost</th>
+                                    <th width="10%" scope="col">Date</th>
+                                </tr>
                             </thead>
                             <tbody>
-                              @foreach($posts as $key=> $value)
-                              <tr>
-                                <th scope="row">{{ $posts->firstItem() + $key  }}</th>
-                                <td>{{ $value->name }}</td>
-                                <td>{{ $value->unit_price }}</td>
-                                <td>{{ $value->quantity }}</td>
-                                <td>{{ $value->regular_price }}</td>
-                                <td>{{ $value->shipping_cost }}</td>
-                                <td>{{ date('d M Y') }}</td>
-                                
-                              </tr>
-                              @endforeach
-                             
-                         </tbody>
+                                @foreach($posts as $key=> $value)
+                                <tr>
+                                    <th scope="row">{{ $posts->firstItem() + $key }}</th>
+                                    <td>{{ $value->name }}</td>
+                                    <td>{{ $value->unit_price }}</td>
+                                    <td>{{ $value->quantity }}</td>
+                                    <td>{{ $value->regular_price }}</td>
+                                    <td>{{ $value->shipping_cost }}</td>
+                                    <td>{{ date('d M Y') }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
                         </table>
-                        
-                            {{ $posts->links() }}
-                        
+                    
+                        {{ $posts->links() }} <!-- Pagination Links -->
                     </div>
                 </div>
             </div>
@@ -69,19 +65,21 @@
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function(){
-        $("#post-search").on('keyup',function(){
-            var query = $(this).val();
-            $.ajax({
-                url: "{{ route('post-data-search') }}",
-                type: "GET",
-                data:{query: query},
-                success: function(data){
-                    $("tbody").html(data);
-                }
-            });
+    $(document).ready(function(){
+    $("#post-search").on('keyup',function(){
+        var query = $(this).val();
+        $.ajax({
+            url: "{{ route('post-data-search') }}",
+            type: "GET",
+            data:{query: query},
+            success: function(response){
+                $("tbody").html(response.data);
+                $(".pagination").html(response.links); // Assuming your pagination element has the class "pagination"
+            }
         });
     });
+});
+
     </script>
     <script type="text/javascript">
         $.ajaxSetup({ headers: { 'csrftoken' : '{{ csrf_token() }}' } });

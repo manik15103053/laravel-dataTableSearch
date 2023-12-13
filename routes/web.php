@@ -14,4 +14,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::get('/',[SearchController::class,'search'])->name('data-search');
+Route::get('/index',[SearchController::class,'index'])->name('index');
 Route::get('/post-data-search',[SearchController::class,'postSearch'])->name('post-data-search');

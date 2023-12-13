@@ -54,46 +54,43 @@ class SearchController extends Controller
     public function postSearch(Request $request){
 
         $query = $request->input('query');
-
+    
         if($request->ajax()){
             $output = "";
-
+    
             $posts = Post::where('name', 'like', '%'.$query.'%')
                             ->orWhere('unit_price', 'like', '%'.$query.'%')
                             ->orWhere('quantity', 'like', '%'.$query.'%')
                             ->orWhere('regular_price', 'like', '%'.$query.'%')
                             ->paginate(10);
-
-              if($posts){
+    
+            if($posts->count() > 0){
                 foreach($posts as $key => $post){
                     $output .='<tr>'.
-                        '<td>'.$posts->firstItem() + $key .'</td>'.
+                        '<td>'. ($posts->firstItem() + $key) .'</td>'.
                         '<td>'. $post->name .'</td>'.
                         '<td>'. $post->unit_price .'</td>'.
                         '<td>'. $post->quantity .'</td>'.
                         '<td>'. $post->regular_price .'</td>'.
                         '<td>'. $post->shipping_cost .'</td>'.
                         '<td>'. date('d M Y') .'</td>'.
-                    
-                    
-                    
-                    
-                    '</tr>';
+                        '</tr>';
                 }
-
-                return Response($output);
-              }              
-
+    
+                return response()->json(['data' => $output, 'links' => $posts->links()->toHtml()]);
+            } else {
+                $output .= '<tr><td colspan="7">No data found</td></tr>';
+                return response()->json(['data' => $output]);
+            }
         }
-
-
+    
         $posts = Post::where('name', 'like', '%'.$query.'%')
-                            ->orWhere('unit_price', 'like', '%'.$query.'%')
-                            ->orWhere('quantity', 'like', '%'.$query.'%')
-                            ->orWhere('regular_price', 'like', '%'.$query.'%')
-                            ->paginate(10);
-
-
-        return view('search-data',compact('posts'));
+                        ->orWhere('unit_price', 'like', '%'.$query.'%')
+                        ->orWhere('quantity', 'like', '%'.$query.'%')
+                        ->orWhere('regular_price', 'like', '%'.$query.'%')
+                        ->paginate(10);
+    
+        return view('search-data', compact('posts'));
     }
+    
 }
